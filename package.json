@@ -1,0 +1,71 @@
+{
+  "name": "mdgram",
+  "version": "0.1.0",
+  "description": "Streaming Markdown to Telegram HTML converter",
+  "author": "Maxim Borodin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/borodin/mdgram.git"
+  },
+  "homepage": "https://github.com/borodin/mdgram#readme",
+  "bugs": {
+    "url": "https://github.com/borodin/mdgram/issues"
+  },
+  "keywords": [
+    "telegram",
+    "markdown",
+    "html",
+    "streaming",
+    "bot",
+    "telegraf"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "lint:fix": "biome check --write .",
+    "bench": "vitest bench",
+    "prepublishOnly": "tsup"
+  },
+  "dependencies": {
+    "marked": "^15"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.2",
+    "@telegraf/entity": "~0.7.0",
+    "remend": "^1",
+    "semantic-release": "^25",
+    "tsup": "^8",
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}
