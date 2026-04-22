@@ -5,13 +5,13 @@ Streaming Markdown to Telegram HTML converter. Safely converts incomplete Markdo
 ## Install
 
 ```bash
-npm install mdgram
+npm install @borodin/mdgram
 ```
 
 ## Usage
 
 ```ts
-import { mdgram } from "mdgram";
+import { mdgram } from "@borodin/mdgram";
 
 mdgram("Hello **world**");
 // "Hello <b>world</b>"
@@ -43,7 +43,7 @@ Unsupported elements (tables, images, etc.) are rendered as plain text.
 Telegram limits message text to **4096** and captions to **1024** UTF-16 code units.
 
 ```ts
-import { mdgram, MESSAGE_LIMIT, CAPTION_LIMIT } from "mdgram";
+import { mdgram, MESSAGE_LIMIT, CAPTION_LIMIT } from "@borodin/mdgram";
 
 mdgram(longMarkdown, { maxLength: MESSAGE_LIMIT });
 mdgram(longMarkdown, { maxLength: CAPTION_LIMIT });

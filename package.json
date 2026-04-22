@@ -1,16 +1,16 @@
 {
-  "name": "mdgram",
+  "name": "@borodin/mdgram",
   "version": "0.1.0",
   "description": "Streaming Markdown to Telegram HTML converter",
   "author": "Maxim Borodin",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/borodin/mdgram.git"
+    "url": "https://github.com/Borodin/mdgram.git"
   },
-  "homepage": "https://github.com/borodin/mdgram#readme",
+  "homepage": "https://github.com/Borodin/mdgram#readme",
   "bugs": {
-    "url": "https://github.com/borodin/mdgram/issues"
+    "url": "https://github.com/Borodin/mdgram/issues"
   },
   "keywords": [
     "telegram",
