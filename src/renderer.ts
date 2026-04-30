@@ -150,6 +150,10 @@ export const telegramRenderer: RendererObject = {
     if ("tokens" in token && token.tokens) {
       return this.parser.parseInline(token.tokens);
     }
+
+    if ("escaped" in token && token.escaped) {
+      return token.text;
+    }
     return esc(token.text);
   },
 };

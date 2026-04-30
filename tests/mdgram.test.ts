@@ -170,6 +170,48 @@ const cases: TestCase[] = [
     expected: "• <b>bold</b> item",
   },
   {
+    // Regression: loose lists (blank line between items) used to double-escape
+    // bold tags producing `&lt;b&gt;` instead of `<b>`. See renderer.text().
+    name: "loose ordered list with bold preserves formatting",
+    input: "1. **A**\n\n2. **B**",
+    expected: "1. <b>A</b>\n2. <b>B</b>",
+  },
+  {
+    name: "loose unordered list with bold preserves formatting",
+    input: "- **A**\n\n- **B**",
+    expected: "• <b>A</b>\n• <b>B</b>",
+  },
+  {
+    name: "loose list mixed with code and italic",
+    input: "1. **A** with `code`\n\n2. *italic* in B",
+    expected: "1. <b>A</b> with <code>code</code>\n2. <i>italic</i> in B",
+  },
+  {
+    name: "loose list with link inside item",
+    input: "1. **A** [link](https://x.io)\n\n2. **B** more",
+    expected: '1. <b>A</b> <a href="https://x.io">link</a>\n2. <b>B</b> more',
+  },
+  {
+    name: "loose list with strikethrough",
+    input: "1. ~~old~~ **new**\n\n2. just **B**",
+    expected: "1. <s>old</s> <b>new</b>\n2. just <b>B</b>",
+  },
+  {
+    name: "loose list with spoiler",
+    input: "1. ||secret A||\n\n2. ||secret B||",
+    expected: "1. <tg-spoiler>secret A</tg-spoiler>\n2. <tg-spoiler>secret B</tg-spoiler>",
+  },
+  {
+    name: "loose list with inline code containing special chars",
+    input: "1. run `<script>` test\n\n2. use `a < b`",
+    expected: "1. run <code>&lt;script&gt;</code> test\n2. use <code>a &lt; b</code>",
+  },
+  {
+    name: "blockquote containing loose list with bold",
+    input: "> 1. **A**\n>\n> 2. **B**",
+    expected: "<blockquote>1. <b>A</b>\n2. <b>B</b></blockquote>",
+  },
+  {
     name: "list with code",
     input: "- use `npm i` cmd",
     expected: "• use <code>npm i</code> cmd",
