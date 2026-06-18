@@ -6,11 +6,11 @@ import type {
   Tokens,
 } from "marked";
 
-function esc(text: string): string {
+export function esc(text: string): string {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function escAttr(text: string): string {
+export function escAttr(text: string): string {
   return esc(text).replace(/"/g, "&quot;");
 }
 
@@ -39,9 +39,10 @@ export const spoilerExtension: TokenizerExtension & RendererExtension = {
 };
 
 export const telegramRenderer: RendererObject = {
-  // Block-level
-
   code({ text, lang }) {
+    // Skip empty code blocks — they occur mid-stream when a fence opener arrives
+    // before any content, and Telegram's Rich API rejects empty <pre> blocks.
+    if (!text) return "";
     const escaped = esc(text);
     if (lang) {
       return `<pre><code class="language-${escAttr(lang)}">${escaped}</code></pre>\n`;
@@ -115,8 +116,6 @@ export const telegramRenderer: RendererObject = {
   html({ text }: Tokens.HTML | Tokens.Tag) {
     return esc(text);
   },
-
-  // Inline-level
 
   strong({ tokens }) {
     return `<b>${this.parser.parseInline(tokens)}</b>`;

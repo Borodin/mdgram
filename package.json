@@ -62,6 +62,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.2",
     "@telegraf/entity": "~0.7.0",
+    "node-html-parser": "^7.1.0",
     "remend": "^1",
     "semantic-release": "^25",
     "tsup": "^8",
