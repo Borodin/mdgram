@@ -105,8 +105,51 @@ function alignAttr(a: string | null): string {
   return a ? ` align="${a}"` : "";
 }
 
+// Render blockquote tokens without <p> wrappers.
+// Adjacent text paragraphs are joined with <br> (per spec example).
+// Block-level elements (headings, lists, code, etc.) are appended without <br>.
+function renderInlineBlocks(
+  this: RendererThis & {
+    parser: {
+      parseInline(tokens: Tokens.Generic[]): string;
+      parse(tokens: Tokens.Generic[]): string;
+    };
+  },
+  tokens: Tokens.Generic[],
+): string {
+  const parts: string[] = [];
+  let lastWasInline = false;
+  for (const tok of tokens) {
+    if (tok.type === "paragraph") {
+      if (lastWasInline) parts.push("<br>");
+      parts.push(this.parser.parseInline((tok as unknown as Tokens.Paragraph).tokens));
+      lastWasInline = true;
+    } else if (tok.type !== "space") {
+      parts.push(this.parser.parse([tok]).trimEnd());
+      lastWasInline = false;
+    }
+  }
+  return parts.join("");
+}
+
 export const richRenderer: RendererObject = {
   ...telegramRenderer,
+
+  paragraph({ tokens }) {
+    const content = this.parser.parseInline(tokens);
+    if (!content) return "";
+    // Standalone images are block-level — don't wrap in <p>
+    if (content.startsWith("<img ") || content.startsWith("<figure>")) return `${content}\n`;
+    return `<p>${content}</p>\n`;
+  },
+
+  br() {
+    return "<br>";
+  },
+
+  space() {
+    return "";
+  },
 
   code({ text, lang }) {
     if (!text) return "";
@@ -125,9 +168,16 @@ export const richRenderer: RendererObject = {
   },
 
   image({ href, title }) {
+    // Telegram spec: media blocks support only HTTP and HTTPS URLs
+    if (!href.startsWith("https://") && !href.startsWith("http://")) return "";
     const src = escAttr(href);
-    if (!title) return `<img src="${src}"/>\n`;
-    return `<figure><img src="${src}"/><figcaption>${esc(title)}</figcaption></figure>\n`;
+    if (!title) return `<img src="${src}"/>`;
+    return `<figure><img src="${src}"/><figcaption>${esc(title)}</figcaption></figure>`;
+  },
+
+  blockquote({ tokens }) {
+    const inner = renderInlineBlocks.call(this as never, tokens as Tokens.Generic[]);
+    return `<blockquote>${inner}</blockquote>\n`;
   },
 
   list(token) {
@@ -138,7 +188,15 @@ export const richRenderer: RendererObject = {
         : "";
     let inner = "";
     for (const item of token.items) {
-      const body = this.parser.parse(item.tokens, !!item.loose).trimEnd();
+      let body = this.parser.parse(item.tokens, !!item.loose).trimEnd();
+      if (item.loose) {
+        // parse() wraps loose content in <p> — strip for <li> compatibility
+        body = body
+          .replace(/<\/p>\n/g, "<br>")
+          .replace(/<\/p>$/, "")
+          .replace(/<p>/g, "")
+          .replace(/<br>$/, "");
+      }
       if (item.task) {
         inner += `<li><input type="checkbox"${item.checked ? " checked" : ""}>${body}</li>\n`;
       } else {

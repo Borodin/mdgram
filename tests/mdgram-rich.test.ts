@@ -381,49 +381,73 @@ const cases: TestCase[] = [
   },
 
   // ── Highlight ==...== ──────────────────────────────────────────────────────
-  { name: "highlight simple", input: "==marked==", expected: "<mark>marked</mark>" },
+  { name: "highlight simple", input: "==marked==", expected: "<p><mark>marked</mark></p>" },
   {
     name: "highlight in sentence",
     input: "This is ==important== text",
-    expected: "This is <mark>important</mark> text",
+    expected: "<p>This is <mark>important</mark> text</p>",
   },
-  { name: "highlight multi-word", input: "==multi word==", expected: "<mark>multi word</mark>" },
-  { name: "highlight single = inside", input: "==a=b==", expected: "<mark>a=b</mark>" },
-  { name: "bold around highlight", input: "**==both==**", expected: "<b><mark>both</mark></b>" },
-  { name: "italic around highlight", input: "*==both==*", expected: "<i><mark>both</mark></i>" },
-  { name: "highlight incomplete streaming", input: "==mark", expected: "<mark>mark</mark>" },
+  {
+    name: "highlight multi-word",
+    input: "==multi word==",
+    expected: "<p><mark>multi word</mark></p>",
+  },
+  { name: "highlight single = inside", input: "==a=b==", expected: "<p><mark>a=b</mark></p>" },
+  {
+    name: "bold around highlight",
+    input: "**==both==**",
+    expected: "<p><b><mark>both</mark></b></p>",
+  },
+  {
+    name: "italic around highlight",
+    input: "*==both==*",
+    expected: "<p><i><mark>both</mark></i></p>",
+  },
+  { name: "highlight incomplete streaming", input: "==mark", expected: "<p><mark>mark</mark></p>" },
   {
     name: "two highlights",
     input: "==a== and ==b==",
-    expected: "<mark>a</mark> and <mark>b</mark>",
+    expected: "<p><mark>a</mark> and <mark>b</mark></p>",
   },
 
   // ── LaTeX inline $...$ ─────────────────────────────────────────────────────
-  { name: "latex inline simple", input: "$x^2$", expected: "<tg-math>x^2</tg-math>" },
+  { name: "latex inline simple", input: "$x^2$", expected: "<p><tg-math>x^2</tg-math></p>" },
   {
     name: "latex inline complex",
     input: "$x^2 + y^2 = r^2$",
-    expected: "<tg-math>x^2 + y^2 = r^2</tg-math>",
+    expected: "<p><tg-math>x^2 + y^2 = r^2</tg-math></p>",
   },
   {
     name: "latex inline with backslash",
     input: "$\\alpha + \\beta$",
-    expected: "<tg-math>\\alpha + \\beta</tg-math>",
+    expected: "<p><tg-math>\\alpha + \\beta</tg-math></p>",
   },
   {
     name: "latex inline in sentence",
     input: "Area is $\\pi r^2$ square units",
-    expected: "Area is <tg-math>\\pi r^2</tg-math> square units",
+    expected: "<p>Area is <tg-math>\\pi r^2</tg-math> square units</p>",
   },
   {
     name: "two latex inline",
     input: "$a$ and $b$",
-    expected: "<tg-math>a</tg-math> and <tg-math>b</tg-math>",
+    expected: "<p><tg-math>a</tg-math> and <tg-math>b</tg-math></p>",
   },
-  { name: "latex inline escaping", input: "$x < y$", expected: "<tg-math>x &lt; y</tg-math>" },
-  { name: "latex inline in bold", input: "**$x^2$**", expected: "<b><tg-math>x^2</tg-math></b>" },
-  { name: "latex inline streaming incomplete", input: "$x^2", expected: "<tg-math>x^2</tg-math>" },
-  { name: "dollar in text no closing", input: "price $100", expected: "price $100" },
+  {
+    name: "latex inline escaping",
+    input: "$x < y$",
+    expected: "<p><tg-math>x &lt; y</tg-math></p>",
+  },
+  {
+    name: "latex inline in bold",
+    input: "**$x^2$**",
+    expected: "<p><b><tg-math>x^2</tg-math></b></p>",
+  },
+  {
+    name: "latex inline streaming incomplete",
+    input: "$x^2",
+    expected: "<p><tg-math>x^2</tg-math></p>",
+  },
+  { name: "dollar in text no closing", input: "price $100", expected: "<p>price $100</p>" },
 
   // ── LaTeX block $$...$$ ────────────────────────────────────────────────────
   {
@@ -454,7 +478,7 @@ const cases: TestCase[] = [
   {
     name: "lone $$ opener no content stays literal",
     input: "$$",
-    expected: "$$",
+    expected: "<p>$$</p>",
   },
 
   // ── LaTeX math code block ──────────────────────────────────────────────────
@@ -470,16 +494,20 @@ const cases: TestCase[] = [
   },
 
   // ── HTML passthrough (<u>, <sub>, <sup>) ───────────────────────────────────
-  { name: "underline u tag", input: "<u>underline</u>", expected: "<u>underline</u>" },
-  { name: "underline ins tag", input: "<ins>inserted</ins>", expected: "<ins>inserted</ins>" },
-  { name: "subscript", input: "<sub>2</sub>", expected: "<sub>2</sub>" },
-  { name: "superscript", input: "<sup>2</sup>", expected: "<sup>2</sup>" },
-  { name: "H2O with subscript", input: "H<sub>2</sub>O", expected: "H<sub>2</sub>O" },
-  { name: "x squared with superscript", input: "x<sup>2</sup>", expected: "x<sup>2</sup>" },
+  { name: "underline u tag", input: "<u>underline</u>", expected: "<p><u>underline</u></p>" },
+  {
+    name: "underline ins tag",
+    input: "<ins>inserted</ins>",
+    expected: "<p><ins>inserted</ins></p>",
+  },
+  { name: "subscript", input: "<sub>2</sub>", expected: "<p><sub>2</sub></p>" },
+  { name: "superscript", input: "<sup>2</sup>", expected: "<p><sup>2</sup></p>" },
+  { name: "H2O with subscript", input: "H<sub>2</sub>O", expected: "<p>H<sub>2</sub>O</p>" },
+  { name: "x squared with superscript", input: "x<sup>2</sup>", expected: "<p>x<sup>2</sup></p>" },
   {
     name: "bold italic underline nested",
     input: "**_<u>all three</u>_**",
-    expected: "<b><i><u>all three</u></i></b>",
+    expected: "<p><b><i><u>all three</u></i></b></p>",
   },
   {
     name: "script tag still escaped",
@@ -489,12 +517,16 @@ const cases: TestCase[] = [
   {
     name: "b via html still escaped",
     input: "<b>via html</b>",
-    expected: "&lt;b&gt;via html&lt;/b&gt;",
+    expected: "<p>&lt;b&gt;via html&lt;/b&gt;</p>",
   },
 
   // ── HR ─────────────────────────────────────────────────────────────────────
   { name: "hr", input: "---", expected: "<hr/>" },
-  { name: "text hr text", input: "before\n\n---\n\nafter", expected: "before\n\n<hr/>\n\nafter" },
+  {
+    name: "text hr text",
+    input: "before\n\n---\n\nafter",
+    expected: "<p>before</p>\n<hr/>\n<p>after</p>",
+  },
 
   // ── Blockquote ─────────────────────────────────────────────────────────────
   { name: "blockquote simple", input: "> quote", expected: "<blockquote>quote</blockquote>" },
@@ -506,12 +538,12 @@ const cases: TestCase[] = [
   {
     name: "blockquote multiline",
     input: "> line1\n> line2",
-    expected: "<blockquote>line1\nline2</blockquote>",
+    expected: "<blockquote>line1<br>line2</blockquote>",
   },
   {
     name: "nested blockquote",
     input: "> outer\n>> inner",
-    expected: "<blockquote>outer\n<blockquote>inner</blockquote></blockquote>",
+    expected: "<blockquote>outer<blockquote>inner</blockquote></blockquote>",
   },
   {
     name: "blockquote with list",
@@ -522,7 +554,7 @@ const cases: TestCase[] = [
     name: "blockquote with heading and list",
     input: "> ## Heading\n> \n> - item with **bold**",
     expected:
-      "<blockquote><h2>Heading</h2>\n<ul>\n<li>item with <b>bold</b></li>\n</ul></blockquote>",
+      "<blockquote><h2>Heading</h2><ul>\n<li>item with <b>bold</b></li>\n</ul></blockquote>",
   },
   {
     name: "blockquote with latex",
@@ -545,42 +577,50 @@ const cases: TestCase[] = [
   },
 
   // ── Spoiler ────────────────────────────────────────────────────────────────
-  { name: "spoiler", input: "||hidden||", expected: "<tg-spoiler>hidden</tg-spoiler>" },
+  { name: "spoiler", input: "||hidden||", expected: "<p><tg-spoiler>hidden</tg-spoiler></p>" },
   {
     name: "spoiler with bold",
     input: "||**bold** secret||",
-    expected: "<tg-spoiler><b>bold</b> secret</tg-spoiler>",
+    expected: "<p><tg-spoiler><b>bold</b> secret</tg-spoiler></p>",
   },
   {
     name: "spoiler with code",
     input: "||`code`||",
-    expected: "<tg-spoiler><code>code</code></tg-spoiler>",
+    expected: "<p><tg-spoiler><code>code</code></tg-spoiler></p>",
   },
   {
     name: "spoiler bold and code",
     input: "||**bold** `code`||",
-    expected: "<tg-spoiler><b>bold</b> <code>code</code></tg-spoiler>",
+    expected: "<p><tg-spoiler><b>bold</b> <code>code</code></tg-spoiler></p>",
   },
   {
     name: "spoiler incomplete streaming",
     input: "||secret",
-    expected: "<tg-spoiler>secret</tg-spoiler>",
+    expected: "<p><tg-spoiler>secret</tg-spoiler></p>",
   },
 
   // ── Inherited inline ───────────────────────────────────────────────────────
-  { name: "bold", input: "**bold**", expected: "<b>bold</b>" },
-  { name: "italic", input: "*italic*", expected: "<i>italic</i>" },
-  { name: "bold italic", input: "***both***", expected: "<i><b>both</b></i>" },
-  { name: "strikethrough", input: "~~del~~", expected: "<s>del</s>" },
-  { name: "strikethrough with code", input: "~~`code`~~", expected: "<s><code>code</code></s>" },
-  { name: "inline code", input: "`code`", expected: "<code>code</code>" },
-  { name: "link", input: "[click](https://t.me)", expected: '<a href="https://t.me">click</a>' },
+  { name: "bold", input: "**bold**", expected: "<p><b>bold</b></p>" },
+  { name: "italic", input: "*italic*", expected: "<p><i>italic</i></p>" },
+  { name: "bold italic", input: "***both***", expected: "<p><i><b>both</b></i></p>" },
+  { name: "strikethrough", input: "~~del~~", expected: "<p><s>del</s></p>" },
+  {
+    name: "strikethrough with code",
+    input: "~~`code`~~",
+    expected: "<p><s><code>code</code></s></p>",
+  },
+  { name: "inline code", input: "`code`", expected: "<p><code>code</code></p>" },
+  {
+    name: "link",
+    input: "[click](https://t.me)",
+    expected: '<p><a href="https://t.me">click</a></p>',
+  },
   {
     name: "html escaping",
     input: "<script>alert(1)</script>",
     expected: "&lt;script&gt;alert(1)&lt;/script&gt;",
   },
-  { name: "ampersand", input: "A & B", expected: "A &amp; B" },
+  { name: "ampersand", input: "A & B", expected: "<p>A &amp; B</p>" },
   {
     name: "image without title",
     input: "![alt](https://example.com/img.png)",
@@ -601,9 +641,19 @@ const cases: TestCase[] = [
   {
     name: "image after paragraph",
     input: "Text\n\n![photo](https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg)",
-    expected: 'Text\n\n<img src="https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg"/>',
+    expected:
+      '<p>Text</p>\n<img src="https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg"/>',
   },
-  { name: "incomplete bold streaming", input: "**not closed", expected: "<b>not closed</b>" },
+  {
+    name: "image non-http url is dropped",
+    input: "![x](ftp://example.com/img.png)",
+    expected: "",
+  },
+  {
+    name: "incomplete bold streaming",
+    input: "**not closed",
+    expected: "<p><b>not closed</b></p>",
+  },
 
   // ── Complex nesting ────────────────────────────────────────────────────────
   {
@@ -620,8 +670,7 @@ const cases: TestCase[] = [
   {
     name: "code block then list",
     input: "```js\nconst x = 1\n```\n\n- item",
-    expected:
-      '<pre><code class="language-js">const x = 1</code></pre>\n\n<ul>\n<li>item</li>\n</ul>',
+    expected: '<pre><code class="language-js">const x = 1</code></pre>\n<ul>\n<li>item</li>\n</ul>',
   },
   {
     name: "highlight in list",
@@ -643,47 +692,47 @@ const cases: TestCase[] = [
     input:
       "# Title\n\nParagraph with **bold** and ==highlight==.\n\n- item 1\n- item 2\n\n| A | B |\n|---|---|\n| 1 | 2 |\n\n> quote\n\n```ts\nconst x = 1\n```",
     expected:
-      '<h1>Title</h1>\nParagraph with <b>bold</b> and <mark>highlight</mark>.\n\n<ul>\n<li>item 1</li>\n<li>item 2</li>\n</ul>\n\n<table>\n<tr><th>A</th><th>B</th></tr>\n<tr><td>1</td><td>2</td></tr>\n</table>\n<blockquote>quote</blockquote>\n\n<pre><code class="language-ts">const x = 1</code></pre>',
+      '<h1>Title</h1>\n<p>Paragraph with <b>bold</b> and <mark>highlight</mark>.</p>\n<ul>\n<li>item 1</li>\n<li>item 2</li>\n</ul>\n<table>\n<tr><th>A</th><th>B</th></tr>\n<tr><td>1</td><td>2</td></tr>\n</table>\n<blockquote>quote</blockquote>\n<pre><code class="language-ts">const x = 1</code></pre>',
   },
   {
     name: "full document with latex",
     input:
       "# Physics\n\nEinstein's formula: $E = mc^2$\n\n$$\\nabla \\cdot E = \\rho / \\varepsilon_0$$\n\n```math\n\\oint B \\cdot dl = \\mu_0 I\n```",
     expected:
-      "<h1>Physics</h1>\nEinstein's formula: <tg-math>E = mc^2</tg-math>\n\n<tg-math-block>\\nabla \\cdot E = \\rho / \\varepsilon_0</tg-math-block>\n\n<tg-math-block>\\oint B \\cdot dl = \\mu_0 I</tg-math-block>",
+      "<h1>Physics</h1>\n<p>Einstein's formula: <tg-math>E = mc^2</tg-math></p>\n<tg-math-block>\\nabla \\cdot E = \\rho / \\varepsilon_0</tg-math-block>\n<tg-math-block>\\oint B \\cdot dl = \\mu_0 I</tg-math-block>",
   },
 
   // ── LaTeX \(...\) inline ───────────────────────────────────────────────────
-  { name: "latex bs inline simple", input: "\\(x^2\\)", expected: "<tg-math>x^2</tg-math>" },
+  { name: "latex bs inline simple", input: "\\(x^2\\)", expected: "<p><tg-math>x^2</tg-math></p>" },
   {
     name: "latex bs inline complex",
     input: "\\(E = mc^2\\)",
-    expected: "<tg-math>E = mc^2</tg-math>",
+    expected: "<p><tg-math>E = mc^2</tg-math></p>",
   },
   {
     name: "latex bs inline backslash commands",
     input: "\\(\\alpha + \\beta\\)",
-    expected: "<tg-math>\\alpha + \\beta</tg-math>",
+    expected: "<p><tg-math>\\alpha + \\beta</tg-math></p>",
   },
   {
     name: "latex bs inline in sentence",
     input: "before \\(x^2\\) after",
-    expected: "before <tg-math>x^2</tg-math> after",
+    expected: "<p>before <tg-math>x^2</tg-math> after</p>",
   },
   {
     name: "latex bs inline two",
     input: "\\(a\\) and \\(b\\)",
-    expected: "<tg-math>a</tg-math> and <tg-math>b</tg-math>",
+    expected: "<p><tg-math>a</tg-math> and <tg-math>b</tg-math></p>",
   },
   {
     name: "latex bs inline escaping",
     input: "\\(x < y\\)",
-    expected: "<tg-math>x &lt; y</tg-math>",
+    expected: "<p><tg-math>x &lt; y</tg-math></p>",
   },
   {
     name: "latex bs inline streaming incomplete",
     input: "\\(x^2",
-    expected: "<tg-math>x^2</tg-math>",
+    expected: "<p><tg-math>x^2</tg-math></p>",
   },
 
   // ── LaTeX \[...\] block ────────────────────────────────────────────────────
@@ -715,25 +764,29 @@ const cases: TestCase[] = [
   {
     name: "latex bs block in document",
     input: "before\n\n\\[x^2\\]\n\nafter",
-    expected: "before\n\n<tg-math-block>x^2</tg-math-block>\n\nafter",
+    expected: "<p>before</p>\n<tg-math-block>x^2</tg-math-block>\n<p>after</p>",
   },
 
   // ── HTML passthrough — new tags ────────────────────────────────────────────
-  { name: "cite passthrough", input: "<cite>source</cite>", expected: "<cite>source</cite>" },
+  {
+    name: "cite passthrough",
+    input: "<cite>source</cite>",
+    expected: "<p><cite>source</cite></p>",
+  },
   {
     name: "tg-spoiler via html",
     input: "<tg-spoiler>hidden</tg-spoiler>",
-    expected: "<tg-spoiler>hidden</tg-spoiler>",
+    expected: "<p><tg-spoiler>hidden</tg-spoiler></p>",
   },
   {
     name: "tg-emoji passthrough",
     input: '<tg-emoji emoji-id="1234">👍</tg-emoji>',
-    expected: '<tg-emoji emoji-id="1234">👍</tg-emoji>',
+    expected: '<p><tg-emoji emoji-id="1234">👍</tg-emoji></p>',
   },
   {
     name: "tg-thinking passthrough",
     input: "<tg-thinking>reasoning</tg-thinking>",
-    expected: "<tg-thinking>reasoning</tg-thinking>",
+    expected: "<p><tg-thinking>reasoning</tg-thinking></p>",
   },
   {
     name: "details block passthrough",
@@ -791,12 +844,12 @@ describe("mdgramRich vs mdgram differences", () => {
   });
 
   it("highlight: ==text== renders only in rich", () => {
-    expect(mdgramRich("==hi==")).toBe("<mark>hi</mark>");
+    expect(mdgramRich("==hi==")).toBe("<p><mark>hi</mark></p>");
     expect(mdgram("==hi==")).toBe("==hi==");
   });
 
   it("latex: $x^2$ renders only in rich", () => {
-    expect(mdgramRich("$x^2$")).toBe("<tg-math>x^2</tg-math>");
+    expect(mdgramRich("$x^2$")).toBe("<p><tg-math>x^2</tg-math></p>");
     expect(mdgram("$x^2$")).toBe("$x^2$");
   });
 
@@ -806,7 +859,7 @@ describe("mdgramRich vs mdgram differences", () => {
   });
 
   it("latex \\(...\\) renders only in rich", () => {
-    expect(mdgramRich("\\(x^2\\)")).toBe("<tg-math>x^2</tg-math>");
+    expect(mdgramRich("\\(x^2\\)")).toBe("<p><tg-math>x^2</tg-math></p>");
     expect(mdgram("\\(x^2\\)")).toBe("(x^2)");
   });
 
@@ -822,7 +875,7 @@ describe("mdgramRich vs mdgram differences", () => {
   });
 
   it("<u> passthrough only in rich", () => {
-    expect(mdgramRich("<u>text</u>")).toBe("<u>text</u>");
+    expect(mdgramRich("<u>text</u>")).toBe("<p><u>text</u></p>");
     expect(mdgram("<u>text</u>")).toBe("&lt;u&gt;text&lt;/u&gt;");
   });
 });
